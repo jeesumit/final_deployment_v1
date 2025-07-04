@@ -11,7 +11,7 @@ class Path_plan:
         
     def path(self):
 
-        tp= self.path_planning(self.gcp, 2.0,3.6,2.2)
+        tp= self.path_planning(self.gcp, 2.2,3.4,2.2)
         self.save_path(tp)
         return tp
 
@@ -174,13 +174,11 @@ class Path_plan:
         
         dist_pts = self.distancebet(newgcp2[len(newgcp2)-1],newgcp[len(newgcp)-1])
         
-        if dist_pts<1:
-            pass
-        elif widthoftrack< turning_radius*2:
-            pass
-        else:
-            turn.append(newgcp2[len(newgcp2)-1])     
-            turn.append(newgcp[len(newgcp)-1])
+
+        turn.append(newgcp2[len(newgcp2)-1])     
+        turn.append(newgcp[len(newgcp)-1])
+        
+        #print(len(turn))
 
         return turn
     
@@ -364,6 +362,7 @@ class Path_plan:
                 z_out = sides[k]
                 sh,sh_dis = self.angle(z_out,sides_k[i])
                 if int(sh) == int(long_bearing):
+                    
                     dt = [z_out,sides_k[i]]
                        
                     z_in.append(dt)
@@ -398,114 +397,140 @@ class Path_plan:
                     head_b = self.points(defa[pi][0],mid_imp+x_imp,az_r)
                     middle_pt=self.midPoint(head_a,head_b)
                     if int(self.angle(middle_pt[0],middle_pt[1])[0])==int(long_bearing):
-                        #trakk.append(middle_pt)
-                        #trakk.append([head_a,head_b])
-                        dist_Ab = self.distancebet(head_a, head_b)
-                        points_added = self.track(head_a,head_b,dist_Ab)
-                        trakk.append(points_added[0])
+                        
+                        trakk.append([head_a,head_b])
+                        #dist_Ab = self.distancebet(head_a, head_b)
+                        #points_added = self.track(head_a,head_b,dist_Ab)
+                        #trakk.append(points_added[0])
 
             except IndexError:
                 pi=pi+1
                     
-                                                
-        '''    
-        for i in range(0,len(trakk)):
-            trak.append(trakk[i])
-        
-        #no skip, omega turn path
-        qi=[]
-        ni=[] 
-        qii=[]
-        nii=[] 
-
-
-        for pi in range(0,len(trak)):
-           
-            
-            try:
-                if pi % 2 ==0:
-                    final_track.append(self.rotate(trak[pi]))
-                    dist_val = self.haversine(trak[pi][0][0],trak[pi][0][1],trak[pi+1][0][0],trak[pi+1][0][1])
-                    
-                    if dist_val > 10:
-                        final_track.append([trak[pi][0],trak[pi+1][0]])
-                    else:
-                        if turnss==1:
-                            final_track.append(self.uturn(trak[pi][0],trak[pi+1][0]))
-                        elif turnss==2:
-                            final_track.append(self.turn(trak[pi][0],trak[pi+1][0], turning_radius))
-                        elif turnss==3:
-                            final_track.append(self.flatturn(trak[pi][0],trak[pi+1][0]))
-                        
-                elif pi % 2 ==1:
-                    final_track.append(trak[pi])
-                    dist_val_st = self.haversine(trak[pi][len(trak[pi])-1][0],trak[pi][len(trak[pi])-1][1],trak[pi+1][len(trak[pi+1])-1][0],trak[pi+1][len(trak[pi+1])-1][1])
-                    if dist_val_st > 10:
-                        final_track.append(self.rotate([trak[pi+1][len(trak[pi+1])-1],trak[pi][len(trak[pi])-1]]))
-
-                    else:
-                        if turnss==1:
-                            final_track.append(self.rotate(self.uturn(trak[pi+1][len(trak[pi+1])-1],trak[pi][len(trak[pi])-1])))
-                        if turnss==2:    
-                            final_track.append(self.rotate(self.turn(trak[pi+1][len(trak[pi+1])-1],trak[pi][len(trak[pi])-1], turning_radius)))
-                        if turnss==3:    
-                            final_track.append(self.rotate(self.flatturn(trak[pi+1][len(trak[pi+1])-1],trak[pi][len(trak[pi])-1])))
-            except IndexError:
-                pi=pi+1'''
 
         
-        #3skip
-        for i in range(0,len(trakk),7):
+        #4skip
+        for i in range(0,len(trakk),9):
             try:
                 trak.append(trakk[i])
-            except IndexError:
-                pass
+                
+            except:
+                continue
+
             try:
-                trak.append(trakk[i+4])
-            except IndexError:
-                pass    
-            try:    
-                trak.append(trakk[i+1])
-            except IndexError:
-                pass
-            try:    
                 trak.append(trakk[i+5])
-            except IndexError:
-                pass 
+              
+            except:
+                try:
+                    trak.append(trakk[i+4])
+                    trak.append(trakk[i+1])
+                    trak.append(trakk[i+3])
+                    trak.append(trakk[i+2]) 
+         
+                except:
+                    try:
+                        trak.append(trakk[i+3]) 
+                        
+                    except:
+                        try:
+                            trak.append(trakk[i+2])
+                            
+                            trak.append(trakk[i+1])
+                            
+                        except:
+                            try:
+                                trak.append(trakk[i+1])
+                               
+                            except:
+                                continue
+                            continue
+                        continue
+
+                    try:
+                        trak.append(trakk[i+1])     
+                                    
+                    except:                        
+                        continue
+                    try:
+                        trak.append(trakk[i+2])   
+                       
+                    except:     
+                        continue
+                    continue
+                continue
+                
             try:
-                trak.append(trakk[i+2])
-            except IndexError:
-                pass       
+                trak.append(trakk[i+1])
+               
+            except:
+                continue
+                
             try:
                 trak.append(trakk[i+6])
-            except IndexError:
-                pass                
+              
+            except:
+                try:
+                    trak.append(trakk[i+4])   
+                    trak.append(trakk[i+2])
+                    trak.append(trakk[i+3])
+                 
+                    continue 
+                except:
+                    continue
+            
+            try:
+                trak.append(trakk[i+2])
+               
+            except:
+                continue
+            
+            try:
+                trak.append(trakk[i+7])
+                
+            except:
+                trak.append(trakk[i+4])
+                trak.append(trakk[i+3])
+              
+                continue
+            
             try:
                 trak.append(trakk[i+3])
-            except IndexError:
-                pass    
+         
+            except:
+                continue
+            
+            try:
+                trak.append(trakk[i+8])
+
+            except:
+                trak.append(trakk[i+4])
+                continue
+            try:
+                trak.append(trakk[i+4])
+
+            except: 
+                continue
                     
         for i in range(0, len(trak)):
               
             
             try:
-                if i%7==0 or i%7==2 or i%7==4 or i%7==6:
+                if i%9==0 or i%9==2 or i%9==4 or i%9==6 or i%9==8:
                     
                     if i%2==0: 
                         final_track.append(self.rotate(trak[i]))    
                         final_track.append(self.flatturn(trak[i][0],trak[i+1][0],turning_radius))       
                     if i%2==1:
                         final_track.append((trak[i])) 
-                        final_track.append(self.rotate(self.flatturn(trak[i+1][1],trak[i][1],turning_radius)))
+                        final_track.append(self.rotate(self.flatturn(trak[i+1][len(trak[i+1])-1],trak[i][len(trak[i])-1],turning_radius)))
 
-                if i%7==1 or i%7==3 or i%7==5:
+                if i%9==1 or i%9==3 or i%9==5 or i%9==7:
                     
                     if i%2==0: 
                         final_track.append(self.rotate(trak[i]))         
                         final_track.append(self.rotate(self.flatturn(trak[i+1][0],trak[i][0],turning_radius)))        
                     if i%2==1:
                         final_track.append(trak[i]) 
-                        final_track.append((self.flatturn(trak[i][1],trak[i+1][1],turning_radius)))
+                        final_track.append((self.flatturn(trak[i][len(trak[i])-1],trak[i+1][len(trak[i+1])-1],turning_radius)))
                 
               
             except IndexError:
@@ -518,6 +543,6 @@ class Path_plan:
             for j in range(0, len(final_track[i])):
                 flat_track.append(final_track[i][j])
                 #print(str(final_track[i][j][0])+","+str(final_track[i][j][1]))
-
+       
         return (flat_track)
             
