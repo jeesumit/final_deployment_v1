@@ -1,5 +1,4 @@
 
-
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -31,7 +30,7 @@ double prdstpt=0.0,prev_cte=0.0;
 int main()
 {
 int fds;
-const char *portname = "/dev/ttyUSB1";
+const char *portname = "/dev/ttyUSB0";
 struct termios tty;
 char message[4]={'\0'};
 ssize_t bytes_written;
@@ -81,8 +80,8 @@ FILE * nf;
 unsigned int *bn;
 /*--------------------LOG FILE INIT___________________________________________*/
 const char *logfile = "data/log.json";
-char *json_str_cte;
-cJSON *json_cte = cJSON_CreateObject();
+//char *json_str_cte;
+//cJSON *json_cte = cJSON_CreateObject();
 
 /*------------------- Intialize GNSS FILE-------------------------------------*/
 const char *filename = "inc/gnr.buf";
@@ -173,7 +172,7 @@ if (cJSON_IsNumber(alt_item)) {
         
     } 
 
-cJSON *lat_item = cJSON_GetObjectItemCaseSensitive(json, "latitude");
+cJSON *lat_item = cJSON_GetObjectItemCaseSensitive(json, "Latitude");
 if (cJSON_IsNumber(lat_item)) {
         lat = lat_item->valuedouble;
         
@@ -191,7 +190,7 @@ if (cJSON_IsNumber(head_item)) {
         head = head_item->valuedouble;
         
     } 
-
+       // printf("%f %f \n",lat,lng);
 	
      if(lat !=0.0 && lng !=0.0){
          if(en.tv_sec - str.tv_sec==1){
@@ -237,8 +236,13 @@ if (cJSON_IsNumber(head_item)) {
            prev_cte = -1*0.6154*cte_ab;
            prdstpt =ConvertRadtoDeg(asin(prev_cte / dis_ac));
            }
-           
+           else{
+
+            prev_cte = cte_ab;
+            prdstpt = prev_cte;
+            }
            canbus = pidHead(diffang_h,2*prdstpt,100.0,0.0,10.0);
+           printf("cte:%.2f, estcte:%.2f, current_dist:%.2f, %d \n",cte_ab,prev_cte,diff,line_count);
 	   /*------------------------ CANBUS SERIAL WRITE------------*/
 	   sprintf(message,"%d\r\n",canbus);
 	   bytes_written = write(fds,message, sizeof(message));
@@ -266,6 +270,7 @@ if (cJSON_IsNumber(head_item)) {
             
    // convert the cJSON object to a JSON string
             char *json_str_cte = cJSON_Print(json_cte);  
+           // printf("%s\n",json_str_cte);
             ssize_t bytes_write = write(fdlg,json_str_cte, strlen(json_str_cte));
             if (bytes_write == -1) {
                 perror("writeERROR");
@@ -273,7 +278,7 @@ if (cJSON_IsNumber(head_item)) {
         
                  }
                  
-           printf("%s\n", json_str_cte);
+          // printf("%s\n", json_str_cte);
                  
            cJSON_free(json_str_cte);
            cJSON_Delete(json_cte);

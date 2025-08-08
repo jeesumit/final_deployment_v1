@@ -25,9 +25,12 @@ int main(){
     time_t epoch_time;
     char data[255];
     char read_buf[255];
-    port_init("/dev/ttyUSB0");
-    char filename[]="data/gns.json";
-    
+    port_init("/dev/ttyS0");
+    char filename[]="data/loggns.json";
+     int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+     if(fd == -1){
+           perror("open--File -- ERROR");
+       }
     while(1){
      
      int num_bytes = read(serial_port, read_buf, sizeof(read_buf));
@@ -35,10 +38,10 @@ int main(){
         fprintf(stderr, "Error reading: %s\n", strerror(errno));
      }
    
-    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+/*    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
     if (fd == -1) {
         perror("openERROR");
-    }
+    }*/
    
      
     
@@ -90,13 +93,15 @@ int main(){
    cJSON_Delete(json);
         
     }
-    if (close(fd) == -1) {
+   /* if (close(fd) == -1) {
         perror("closeERROR");
         // Handle error
-    }
-   
-   
+    }*/
      }
+      if(close(fd) == -1){
+          perror("closeERROR");
+       }
+
     //memset(data,'\0',sizeof(data));
     close(serial_port);
     tcsetattr(serial_port,TCSANOW,&tty);

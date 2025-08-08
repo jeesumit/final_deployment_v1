@@ -18,7 +18,7 @@ class GNSSData:
                 data=json.load(file)
                 
             #print(data)
-            return {"latitude": data["latitude"], "longitude": data["Longitude"]}
+            return {"latitude": data["Latitude"], "longitude": data["Longitude"]}
 
         except Exception as e:
             pass

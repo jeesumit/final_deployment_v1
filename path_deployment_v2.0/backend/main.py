@@ -10,7 +10,7 @@ app = Flask(__name__)
 gcp=[]
 
 #data_read = GNSSData("/home/robo/dev/fil_/path_deployment/src/canbus/serial_posix_v2/inc/gnr.buf")
-data_read = GNSSData("/home/robo/dev/mong/serial_posix_v5.0/cjson_dev/src/data/gns.json")
+data_read = GNSSData("../../data/gns.json")
 #proc = Run_process("../src/","gnss")
 
 def event_stream():
