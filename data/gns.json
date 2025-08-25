@@ -1,10 +1,10 @@
 {
-	"Velocity":	0.013,
-	"Latitude":	28.43218994140625,
-	"Longitude":	77.3363037109375,
-	"Head":	85.94,
-	"Altitude":	191.1,
-	"Hdop":	0.54,
-	"Time":	161832,
-	"Date":	210725
+	"Velocity":	0.19,
+	"Latitude":	28.432914733886719,
+	"Longitude":	77.306846618652344,
+	"Head":	103.6,
+	"Altitude":	197.444,
+	"Hdop":	2.92,
+	"Time":	11146,
+	"Date":	200825
 }
